@@ -1,0 +1,186 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task 3 - Quiz & Joke App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #dfe9f3, #ffffff);
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }h1 {
+  color: #004085;
+  font-size: 32px;
+  margin-bottom: 25px;
+}
+
+h2 {
+  color: #0056b3;
+}
+
+.highlight {
+  background-color: #cce5ff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.card {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  width: 90%;
+  max-width: 500px;
+  text-align: left;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.01);
+}
+
+button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  font-size: 16px;
+  margin-top: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+#options button {
+  display: block;
+  margin: 8px 0;
+  width: 100%;
+  text-align: left;
+  background-color: #007bff;
+}
+
+#options button:hover {
+  background-color: #0056b3;
+}
+
+#feedback {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#score {
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+  </style>
+</head>
+<body>
+  <h1 class="highlight">Task 3: Quiz 🎓 & Random Joke 😂</h1>  <!-- Quiz Section -->  <div class="card">
+    <h2 class="highlight">🎯 Interactive Quiz</h2>
+    <p id="question">Loading question...</p>
+    <div id="options"></div>
+    <p id="feedback"></p>
+    <p id="score"></p>
+    <button id="nextBtn" style="display: none;">Next ➡</button>
+  </div>  <!-- Joke Section -->  <div class="card">
+    <h2 class="highlight">😂 Random Joke</h2>
+    <p id="joke">Click the button to see a joke!</p>
+    <button onclick="getJoke()">Tell Me a Joke 🤪</button>
+  </div>  <script>
+    // Simple Quiz Data
+    const quiz = [
+      {
+        question: "What is 2 + 2?",
+        options: ["3", "4", "5", "6"],
+        answer: "4"
+      },
+      {
+        question: "What is the color of the sky?",
+        options: ["Red", "Blue", "Green", "Yellow"],
+        answer: "Blue"
+      },
+      {
+        question: "Which is a fruit?",
+        options: ["Carrot", "Apple", "Spinach", "Potato"],
+        answer: "Apple"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const feedbackEl = document.getElementById("feedback");
+    const nextBtn = document.getElementById("nextBtn");
+    const scoreEl = document.getElementById("score");
+
+    function loadQuestion() {
+      if (currentQuestion < quiz.length) {
+        const q = quiz[currentQuestion];
+        questionEl.textContent = q.question;
+        optionsEl.innerHTML = "";
+        feedbackEl.textContent = "";
+        nextBtn.style.display = "none";
+        scoreEl.textContent = Score: ${score} / ${quiz.length};
+        q.options.forEach(option => {
+          const btn = document.createElement("button");
+          btn.textContent = option;
+          btn.onclick = () => checkAnswer(option);
+          optionsEl.appendChild(btn);
+        });
+      } else {
+        questionEl.textContent = "🎉 Quiz Completed!";
+        optionsEl.innerHTML = "";
+        feedbackEl.innerHTML = ✅ Final Score: <span style='color:#28a745'>${score} / ${quiz.length}</span>;
+        scoreEl.textContent = "";
+        nextBtn.style.display = "none";
+      }
+    }
+
+    function checkAnswer(selected) {
+      const correct = quiz[currentQuestion].answer;
+      if (selected === correct) {
+        feedbackEl.style.color = "green";
+        feedbackEl.textContent = "✅ Correct!";
+        score++;
+      } else {
+        feedbackEl.style.color = "red";
+        feedbackEl.textContent = ❌ Wrong! Answer: ${correct};
+      }
+      scoreEl.textContent = Score: ${score} / ${quiz.length};
+      nextBtn.style.display = "inline-block";
+    }
+
+    nextBtn.onclick = () => {
+      currentQuestion++;
+      loadQuestion();
+    };
+
+    loadQuestion();
+
+    // Joke API Function
+    function getJoke() {
+      fetch("https://icanhazdadjoke.com/", {
+        headers: { Accept: "application/json" }
+      })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("joke").textContent = 🤣 ${data.joke};
+        })
+        .catch(() => {
+          document.getElementById("joke").textContent = "❌ Error fetching joke.";
+        });
+    }
+  </script></body>
+</html>
